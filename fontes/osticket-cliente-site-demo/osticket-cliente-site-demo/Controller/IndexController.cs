@@ -8,25 +8,38 @@ using osticketclientesitedemo.Service;
 
 namespace osticketclientesitedemo.Controller
 {
+    /// <summary>
+    /// Controlador Principal.
+    /// </summary>
     public class IndexController : NancyModule
     {
+        /// <summary>
+        /// Inicializa uma nova instância da classe <see cref="osticketclientesitedemo.Controller.IndexController"/>.
+        /// </summary>
         public IndexController()
             : base("/formularios")
         {
             Get["/"] = parameters => Response.AsFile("Content/index.html", "text/html");
             Get["/projetos"] = parameters => Response.AsFile("Content/index.html", "text/html");
             Get["/projetos/segurapreco"] = parameters => Response.AsFile("Content/projetos/segurapreco.html", "text/html");
-            Post["/projetos/segurapreco"] = parameters => EnviarFormularioSeguraPreco();
+            Post["/projetos/segurapreco"] = parameters => EnviarFormularioContatoSeguraPreco();
         }
 
-        private Negotiator EnviarFormularioSeguraPreco()
+        /// <summary>
+        /// Envia o formulário de contato do projeto Segura Preço.
+        /// </summary>
+        /// <returns>O resultado do envio do formulário de contato.</returns>
+        private Negotiator EnviarFormularioContatoSeguraPreco()
         {
-            var formulario = this.Bind<RecebeFormularioDataTransferObject>();
+            var formulario = this.Bind<RecebeFormularioContatoDataTransferObject>();
             var dicionario = new ProjetoSeguraPrecoDictionary();
 
             try
             {
-                ProjetoSeguraPrecoDictionary.Categoria? categoria = dicionario.Converter(formulario.Assunto);
+                // Seleciona a categoria de acordo com o seu dicionário
+                ProjetoSeguraPrecoDictionary.Categoria? categoria = dicionario.ObterCategoria(formulario.Assunto);
+
+                // Envia os dados do formulário de contato
                 int ticket = OsTicketService.Submeter(
                                  formulario.Nome,
                                  formulario.Cpf,

@@ -1,7 +1,10 @@
 ﻿
 namespace osticketclientesitedemo.DataTransferObject
 {
-    public class RecebeFormularioDataTransferObject
+    /// <summary>
+    /// Objeto de Transferência de Dados que Recebe do Formulário de Contato.
+    /// </summary>
+    public class RecebeFormularioContatoDataTransferObject
     {
 
         public string Nome { get; set; }
