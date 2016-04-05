@@ -9,7 +9,7 @@ namespace osticketclientesitedemo
     {
         public static void Main(string[] args)
         {
-            const string uri = "http://localhost:8888";
+            const string uri = "http://localhost:8080";
             Console.WriteLine("Iniciando o Nancy em " + uri);
 
             // Inicializando uma instância do NancyHost

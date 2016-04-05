@@ -27,6 +27,8 @@ namespace osticketclientesitedemo.Controller
             Post["/projetos/caixamaisvantagens"] = parameters => EnviarFormularioContatoCaixaMaisVantagens();
             Get["/projetos/maisdesconto"] = parameters => Response.AsFile("Content/projetos/maisdesconto.html", "text/html");
             Post["/projetos/maisdesconto"] = parameters => EnviarFormularioContatoMaisDesconto();
+            Get["/projetos/vantagens"] = parameters => Response.AsFile("Content/projetos/vantagens.html", "text/html");
+            Post["/projetos/vantagens"] = parameters => EnviarFormularioContatoVantagens();
         }
 
         /// <summary>
@@ -142,6 +144,43 @@ namespace osticketclientesitedemo.Controller
                 return View["erro"];
             }
         }
+
+        /// <summary>
+        /// Envia o formulário de contato do projeto Vantagens.
+        /// </summary>
+        /// <returns>O resultado do envio do formulário de contato.</returns>
+        private Negotiator EnviarFormularioContatoVantagens()
+        {
+            var formulario = this.Bind<RecebeFormularioContatoDataTransferObject>();
+            var dicionario = new ProjetoVantagensDictionary();
+
+            try
+            {
+                // Seleciona a categoria de acordo com o seu dicionário
+                var categoria = dicionario.ObterCategoria(formulario.Assunto);
+
+                // Envia os dados do formulário de contato
+                var ticket = OsTicketService.Submeter(
+                    formulario.Nome,
+                    formulario.Cpf,
+                    formulario.Telefone,
+                    formulario.Email,
+                    dicionario.ObterValor(categoria),
+                    dicionario.ObterRotulo(categoria),
+                    formulario.Mensagem);
+
+                Console.WriteLine("Ticket: " + ticket);
+
+                this.ViewBag.ticket = ticket;
+                return View["enviado"];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro: " + ex.Message);
+
+                this.ViewBag.mensagem = ex.Message;
+                return View["erro"];
+            }
+        }
     }
 }
-
